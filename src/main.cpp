@@ -4,34 +4,43 @@
 #include <iostream>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "headers/stb_image.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
+#include "headers/stb_image_write.h"
+
+#include "headers/cxxopts.hpp"
 
 class Image {
  public:
   Image() = default;
-  Image(const char* name);
+  Image(const std::string& file_name);
   
   ~Image();
 
-  void Darken(const char percent);
-  
-  void CreateOutputImage(const char* new_image_name) const;
+  void Darken(const char percent);  // Получившаяся картинка будет иметь percent% света от изначального
+  void Invert();  // Инвертирует цвет
+  void ReflectHorizontally();  // Отражает по горизонтали
+  void ReflectVertically();  //  Отражает по вертикали 
+
+  void CreateOutputImage(const std::string& output_image_name) const;
 
  private:
+  struct Constants {
+    static constexpr int kMaxColorValue = 255;
+  };
+
   unsigned char* data_ = nullptr;
   int width_ = 0;
   int height_ = 0;
   int number_of_channels_ = 0;
 };
 
-Image::Image(const char* name) {
-  data_ = stbi_load(name, &width_, &height_, &number_of_channels_, 0);
+Image::Image(const std::string& file_name) {
+  data_ = stbi_load(file_name.c_str(), &width_, &height_, &number_of_channels_, 0);
 
   if (data_ == NULL) {
-    throw std::runtime_error("Не смог открыть изначальный файл" + std::string(name) + "\nПричина: " + stbi_failure_reason());
+    throw std::runtime_error("Не смог открыть изначальный файл" + file_name + "\nПричина: " + stbi_failure_reason());
   }
 
   std::cout << "Успешно открыл изначальный файл!" << std::endl;
@@ -46,48 +55,108 @@ void Image::Darken(const char percent) {
     for (int current_column = 0; current_column < width_; ++current_column) {
       unsigned char* current_pixel = data_ + (width_ * current_line + current_column) * number_of_channels_;
 
-      unsigned char& red = current_pixel[0];
-      unsigned char& green = current_pixel[1];
-      unsigned char& blue = current_pixel[2];
-
-      red = std::lround(red * 0.01 * percent);
-      green = std::lround(green * 0.01 * percent);
-      blue = std::lround(blue * 0.01 * percent);
+      for (int current_channel = 0; current_channel < number_of_channels_; ++current_channel) {
+        current_pixel[current_channel] = std::lround(current_pixel[current_channel] * 0.01 * percent);
+      }
     }
   }
 }
 
-void Image::CreateOutputImage(const char* new_image_name) const {
+void Image::Invert() {
+  for (int current_line = 0; current_line < height_; ++current_line) {
+    for (int current_column = 0; current_column < width_; ++current_column) {
+      unsigned char* current_pixel = data_ + (width_ * current_line + current_column) * number_of_channels_;
+
+      for (int current_channel = 0; current_channel < number_of_channels_; ++current_channel) {
+        current_pixel[current_channel] = Constants::kMaxColorValue - current_pixel[current_channel];
+      }
+    }
+  }
+}
+
+void Image::ReflectHorizontally() {
+  for (int current_line = 0; current_line < height_ / 2; ++current_line) {
+    for (int current_column = 0; current_column < width_; ++current_column) {
+      unsigned char* current_pixel = data_ + (width_ * current_line + current_column) * number_of_channels_;
+      unsigned char* horizontally_symmetrical_pixel = data_ + (width_ * (height_ - current_line - 1) + current_column) * number_of_channels_;
+
+      for (int current_channel = 0; current_channel < number_of_channels_; ++current_channel) {
+        std::swap(current_pixel[current_channel], horizontally_symmetrical_pixel[current_channel]);
+      }
+    }
+  }
+}
+
+
+void Image::ReflectVertically() {
+  for (int current_line = 0; current_line < height_; ++current_line) {
+    for (int current_column = 0; current_column < width_ / 2; ++current_column) {
+      unsigned char* current_pixel = data_ + (width_ * current_line + current_column) * number_of_channels_;
+      unsigned char* horizontally_symmetrical_pixel = data_ + (width_ * current_line + (width_ - current_column - 1)) * number_of_channels_;
+
+      for (int current_channel = 0; current_channel < number_of_channels_; ++current_channel) {
+        std::swap(current_pixel[current_channel], horizontally_symmetrical_pixel[current_channel]);
+      }
+    }
+  }
+}
+
+void Image::CreateOutputImage(const std::string& output_image_name) const {
   int stride = width_ * number_of_channels_;
   
-  if (!stbi_write_png(new_image_name, width_, height_, number_of_channels_, data_, stride)) { // Может стоит здесь как-то память очистить???
-    throw std::runtime_error("Не удалось сохранить файл " + std::string(new_image_name));
+  if (!stbi_write_png(output_image_name.c_str(), width_, height_, number_of_channels_, data_, stride)) { // Может стоит здесь как-то память очистить???
+    throw std::runtime_error("Не удалось сохранить файл " + output_image_name);
   }
 
-  std::cout << "Результат сохранен в файл " << std::string(new_image_name) << "!" << std::endl;
+  std::cout << "Результат сохранен в файл " << output_image_name << "!" << std::endl;
 }
 
 int main(int argc, char** argv) {
-  if (argc != 2) { 
-    throw std::runtime_error("Неправильный список аргументов. Он должен выглядеть так: [<name_of_the_picture>]");
+  // TODO: Сделать проверку аргументов сразу
+  
+  cxxopts::Options options("ImageFormatter", "This program formats the input picture based on cli arguments");
+
+  options.add_options()
+    ("i,input", "Input file", cxxopts::value<std::string>())
+    ("o,output", "Output file", cxxopts::value<std::string>())
+    ("operations", "Names of operations to perform", cxxopts::value<std::vector<std::string>>())
+    ;
+  
+  options.parse_positional({"operations"});
+
+  auto result = options.parse(argc, argv);
+
+  if (!result.contains("input") || !result.contains("output")) {
+    throw std::runtime_error("Input or Output files are not mentioned in the argument list");
   }
 
-  int image_width;
-  int image_height;
-  int image_number_of_channels;
+  Image image(result["input"].as<std::string>());
 
-  unsigned char* data = nullptr;
+  std::vector<std::string> operation_list;
 
-  data = stbi_load(argv[1], &image_width, &image_height, &image_number_of_channels, 0);
-  
-  if (data == NULL) {
-    throw std::runtime_error("Не смог открыть изначальный файл " + std::string(argv[1]) + "\nПричина: " + stbi_failure_reason());
+  for (const auto& kv : result.arguments()) {
+    if (kv.key() != "operations") {
+      continue;
+    }
+    operation_list.emplace_back(kv.value());
   }
-  
-  Image image(argv[1]);
 
-  image.Darken(10);
-  image.CreateOutputImage("sigma.png");
+  for (size_t operation_list_index = 0; operation_list_index < operation_list.size(); ++operation_list_index) {
+    if (operation_list[operation_list_index] == "darken") {
+      image.Darken(std::stoi(operation_list[operation_list_index + 1]));
+      ++operation_list_index;
+    } else if (operation_list[operation_list_index] == "invert") {
+      image.Invert();
+    } else if (operation_list[operation_list_index] == "ref-hor") {
+      image.ReflectHorizontally();
+    } else if (operation_list[operation_list_index] == "ref-ver") {
+      image.ReflectVertically();
+    } else {
+      throw std::runtime_error("Unknown operation: " + operation_list[operation_list_index]);
+    }
+  }
+
+  image.CreateOutputImage(result["output"].as<std::string>());
   
   return 0;
 }
