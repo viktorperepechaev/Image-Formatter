@@ -1,31 +1,36 @@
 #pragma once
 
 #include <string>
+#include <memory>
 
 #include "stb_image.h"
 #include "stb_image_write.h"
 
 class Image {
  public:
-  Image() = default;
+  Image() = delete;
   Image(const std::string& file_name);
   
-  ~Image();
+  ~Image() = default;
 
   void Darken(const char percent);  // Получившаяся картинка будет иметь percent% света от изначального
+  
   void Invert();  // Инвертирует цвет
+  
   void ReflectHorizontally();  // Отражает по горизонтали
   void ReflectVertically();  //  Отражает по вертикали 
+  
+  void Rotate90DegreesClockwise();  // Поворачивает картинку на 90 градусов по часовой
 
-  void CreateOutputImage(const std::string& output_image_name) const;
+  void CreateOutputImage(const std::string& output_image_name) const;  // Создаёт файл (.png) с указанным названием
 
  private:
   struct Constants {
     static constexpr int kMaxColorValue = 255;
   };
 
-  unsigned char* data_ = nullptr;
-  int width_ = 0;
-  int height_ = 0;
-  int number_of_channels_ = 0;
+  std::unique_ptr<unsigned char, void(*)(void*)> data_;
+  int width_;
+  int height_;
+  int number_of_channels_;
 };
