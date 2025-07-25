@@ -12,7 +12,7 @@ A simple command-line utility written in C++ for performing basic image manipula
     * Invert colors
     * Reflect horizontally (flip vertically)
     * Reflect vertically (flip horizontally)
-    * Rotate by $n$ degrees, where $n = 90 \cdot k,\; k \in \mathbb{Z}$
+    * Rotate by $n$ degrees, where $n = 90 \cdot k, k \in \mathbb{Z}$
 
 ## Dependencies
 
