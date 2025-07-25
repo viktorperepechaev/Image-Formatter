@@ -46,7 +46,8 @@ int main(int argc, char** argv) {
     } else if (operation_list[operation_list_index] == "ref-ver") {
       image.ReflectVertically();
     } else if (operation_list[operation_list_index] == "rotate") {
-      image.Rotate90DegreesClockwise();
+      image.Rotate(std::stoi(operation_list[operation_list_index + 1]));
+      ++operation_list_index;
     } else {
       throw std::runtime_error("Unknown operation: " + operation_list[operation_list_index]);
     }

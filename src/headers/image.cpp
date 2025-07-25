@@ -88,10 +88,53 @@ void Image::Rotate90DegreesClockwise() {
   data_ = std::move(new_data);
 }
 
+void Image::Rotate90DegreesCounterclockwise() {
+  size_t new_data_size = height_ * width_ * number_of_channels_;
+
+  std::unique_ptr<unsigned char, void(*)(void*)> new_data(static_cast<unsigned char*>(malloc(new_data_size)), stbi_image_free);
+
+  for (int current_line = 0; current_line < height_; ++current_line) {
+    for (int current_column = 0; current_column < width_; ++current_column) {
+      int rotated_line_index = width_ - current_column - 1;
+      int rotated_column_index = current_line;
+
+      unsigned char* current_pixel = data_.get() + (width_ * current_line + current_column) * number_of_channels_;
+      unsigned char* rotated_pixel = new_data.get() + (height_ * rotated_line_index + rotated_column_index) * number_of_channels_;
+      
+      memcpy(rotated_pixel, current_pixel, number_of_channels_);
+    }
+  }
+
+  std::swap(height_, width_);
+
+  data_ = std::move(new_data);
+}
+
+void Image::Rotate(int degree) {
+  bool is_positive = (degree > 0);
+
+  degree = std::abs(degree);
+  degree %= 360;
+
+  if (degree == 0) { 
+    return; 
+  }
+
+  if (is_positive) {
+    for (int counter = 0; counter < degree / 90; ++counter) {
+      Rotate90DegreesClockwise();
+    }
+  } else {
+    for (int counter = 0; counter < degree / 90; ++counter) {
+      Rotate90DegreesCounterclockwise();
+    }
+  }
+}
+
 void Image::CreateOutputImage(const std::string& output_image_name) const {
   int stride = width_ * number_of_channels_;
   
-  if (!stbi_write_png(output_image_name.c_str(), width_, height_, number_of_channels_, data_.get(), stride)) { // Может стоит здесь как-то память очистить???
+  if (!stbi_write_png(output_image_name.c_str(), width_, height_, number_of_channels_, data_.get(), stride)) {
     throw std::runtime_error("Не удалось сохранить файл " + output_image_name);
   }
 

@@ -12,6 +12,7 @@ A simple command-line utility written in C++ for performing basic image manipula
     * Invert colors
     * Reflect horizontally (flip vertically)
     * Reflect vertically (flip horizontally)
+    * Rotate by $n$ degrees, where $n = 90 \cdot k,\; k \in \mathbb{Z}$
 
 ## Dependencies
 
@@ -40,13 +41,16 @@ g++ main.cpp image.cpp -o ImageFormatter -std=c++17
 The program is operated via the command line with the following syntax:
 
 ```bash
-./ImageFormatter -i <input_file> -o <output_file> [operation1 [params]] [operation2 [params]] ...
+./ImageFormatter -i <input_file> -o <output_file> -- [operation1 [params]] [operation2 [params]] ...
 ```
 
 ### Arguments
 - `-i`, `--input`: (Required) Path to the input image file.
 - `-o`, `--output`: (Required) Path for the output PNG image file.
 - `operations`: A sequence of one or more operations to apply to the image. These are positional arguments that follow the input/output flags.
+
+### Note
+-  `--`: is the separator between positional and non-positional arguments. Don't forget it!
 
 ### Available Operations
 The following operations can be applied in the order they are provided on the command line.
@@ -58,11 +62,13 @@ The following operations can be applied in the order they are provided on the co
     - Reflects the image across the horizontal axis (flips it vertically).
 - `ref-ver`
     - Reflects the image across the vertical axis (flips it horizontally).
+- `rotate <degree>`
+    - Rotates the image by `<degree>` degrees. If positive - clockwise, if negative - counterclockwise 
 
 ## Examples
 1. Invert the colors of `input.jpg` and save it as inverted.png:
-    `./ImageFormatter -i input.jpg -o inverted.png invert`
+    `./ImageFormatter -i input.jpg -o inverted.png -- invert`
 2. Darken `photo.png` to 70% brightness and then reflect it vertically:
-    `./ImageFormatter -i photo.png -o processed.png darken 70 ref-ver`
+    `./ImageFormatter -i photo.png -o processed.png -- darken 70 ref-ver`
 3. Apply multiple reflections to original.bmp:
-    `./ImageFormatter -i original.bmp -o reflected.png ref-hor ref-ver`
+    `./ImageFormatter -i original.bmp -o reflected.png -- ref-hor ref-ver`
