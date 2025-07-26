@@ -13,6 +13,7 @@ A simple command-line utility written in C++ for performing basic image manipula
     * Reflect horizontally (flip vertically)
     * Reflect vertically (flip horizontally)
     * Rotate by $n$ degrees, where $n = 90 \cdot k, k \in \mathbb{Z}$
+    * Sobel operator
 
 ## Dependencies
 
@@ -64,6 +65,8 @@ The following operations can be applied in the order they are provided on the co
     - Reflects the image across the vertical axis (flips it horizontally).
 - `rotate <degree>`
     - Rotates the image by `<degree>` degrees. If positive - clockwise, if negative - counterclockwise 
+- `sobel`
+    - Applies Sobel operator to the image
 
 ## Examples
 1. Invert the colors of `input.jpg` and save it as inverted.png:

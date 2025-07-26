@@ -62,6 +62,8 @@ int main(int argc, char** argv) {
                 argument_list[operation_index + 1].value();
             ++operation_index;
             return {val1};
+          } else if (val == "sobel") {
+            return {};
           } else {
             throw std::runtime_error("Unknown argument: " + val);
           }
@@ -97,7 +99,12 @@ int main(int argc, char** argv) {
          const std::vector<std::string>& operation_arguments) {
         local_image.Rotate(std::stoi(operation_arguments[0]));
       };
-
+  call_table["sobel"] =
+      [](Image& local_image,
+         const std::vector<std::string>& operation_arguments) {
+        local_image.SobelOperator();
+      };
+  
   for (const auto& operation : operations) {
     call_table[operation.first](image, operation.second);
   }

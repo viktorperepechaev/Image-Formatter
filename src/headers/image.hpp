@@ -23,7 +23,9 @@ class Image {
   void Rotate90DegreesClockwise();  // Поворачивает картинку на 90 градусов по часовой
   void Rotate90DegreesCounterclockwise();  // Поворачивает картинку на 90 градусов против часов
   void Rotate(const int degree);  // Поворачиает картинку на degree градусов (degree должно делиться на 90) 
-  
+
+  void SobelOperator();  // Применяет оператор Собеля, TODO: добавить параметр "жёсткости" оператора
+
   void CreateOutputImage(const std::string& output_image_name) const;  // Создаёт файл (.png) с указанным названием
 
  private:
