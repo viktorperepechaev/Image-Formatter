@@ -1,0 +1,4 @@
+/Users/viktor/MIPT/CPP/Playground/Image-To-Ascii-Converter/build/CMakeFiles/IMAGE.dir
+/Users/viktor/MIPT/CPP/Playground/Image-To-Ascii-Converter/build/CMakeFiles/main.dir
+/Users/viktor/MIPT/CPP/Playground/Image-To-Ascii-Converter/build/CMakeFiles/edit_cache.dir
+/Users/viktor/MIPT/CPP/Playground/Image-To-Ascii-Converter/build/CMakeFiles/rebuild_cache.dir

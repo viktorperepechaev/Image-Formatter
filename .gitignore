@@ -6,3 +6,5 @@
 *.png
 
 src/main
+
+tmp/*

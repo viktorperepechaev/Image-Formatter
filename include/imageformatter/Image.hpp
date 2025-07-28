@@ -3,8 +3,8 @@
 #include <string>
 #include <memory>
 
-#include "stb_image.h"
-#include "stb_image_write.h"
+#include "../../third_party/stb/stb_image.h"
+#include "../../third_party/stb/stb_image_write.h"
 
 class Image {
  public:
@@ -13,7 +13,7 @@ class Image {
   
   ~Image() = default;
 
-  void Darken(const char percent);  // Получившаяся картинка будет иметь percent% света от изначального
+  void Darken(std::uint8_t percent);  // Получившаяся картинка будет иметь percent% света от изначального, TODO: add float support or make sure the user understands that you can input only int
   
   void Invert();  // Инвертирует цвет
   
@@ -29,6 +29,8 @@ class Image {
   void CreateOutputImage(const std::string& output_image_name) const;  // Создаёт файл (.png) с указанным названием
 
  private:
+  bool CoordinatesInsidePicture(int line_index, int column_index) const;
+
   struct Constants {
     static constexpr int kMaxColorValue = 255;
   };

@@ -5,8 +5,8 @@
 #include <string>
 #include <unordered_map>
 
-#include "headers/cxxopts.hpp"
-#include "headers/image.hpp"
+#include "../third_party/cxxopts/cxxopts.hpp"
+#include "../include/imageformatter/Image.hpp"
 
 int main(int argc, char** argv) {
   // TODO: Сделать проверку аргументов сразу
@@ -47,6 +47,9 @@ int main(int argc, char** argv) {
           const std::string& val = argument_list[operation_index].value();
 
           if (val == "darken") {
+            if (operation_index + 1 >= argument_list.size()) {
+              throw std::runtime_error("Not enough arguments for darken");
+            }
             const std::string& val1 =
                 argument_list[operation_index + 1].value();
             ++operation_index;
@@ -55,9 +58,12 @@ int main(int argc, char** argv) {
             return {};
           } else if (val == "ref-hor") {
             return {};
-          } else if (val == "reh-ver") {
+          } else if (val == "ref-ver") {
             return {};
           } else if (val == "rotate") {
+            if (operation_index + 1 >= argument_list.size()) {
+              throw std::runtime_error("Not enough arguments for rotate");
+            }
             const std::string& val1 =
                 argument_list[operation_index + 1].value();
             ++operation_index;
@@ -77,6 +83,12 @@ int main(int argc, char** argv) {
   call_table["darken"] =
       [](Image& local_image,
          const std::vector<std::string>& operation_arguments) {
+        int percent = std::stoi(operation_arguments[0]);
+        
+        if (!(0 <= percent && percent <= 100)) {
+          throw std::runtime_error("Invalid darken argument: " + operation_arguments[0] + ". The argument must be an 0 <= integer <= 100.");
+        }
+
         local_image.Darken(std::stoul(operation_arguments[0]));
       };
   call_table["invert"] =
@@ -97,6 +109,12 @@ int main(int argc, char** argv) {
   call_table["rotate"] =
       [](Image& local_image,
          const std::vector<std::string>& operation_arguments) {
+        int degree = std::stoi(operation_arguments[0]);
+        
+        if (!(std::abs(degree) % 90 == 0)) {
+          throw std::runtime_error("Invalid rotate argument: " + operation_arguments[0] + ". (Positive/Negative) Argument must be an integer that is multiple of 90.");
+        }
+
         local_image.Rotate(std::stoi(operation_arguments[0]));
       };
   call_table["sobel"] =
