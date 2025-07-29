@@ -7,6 +7,8 @@
 
 #include "../third_party/cxxopts/cxxopts.hpp"
 #include "../include/imageformatter/Image.hpp"
+#include "../include/imageformatter/DarkenOperation.hpp"
+#include "../include/imageformatter/OperationPipeline.hpp"
 
 int main(int argc, char** argv) {
   // TODO: Сделать проверку аргументов сразу
@@ -31,9 +33,9 @@ int main(int argc, char** argv) {
 
   Image image(result["input"].as<std::string>());
 
-  std::vector<std::pair<std::string, std::vector<std::string>>> operations;
-
   const auto& argument_list = result.arguments();
+
+  OperationPipeline pipeline;
 
   for (size_t operation_index = 0; operation_index < argument_list.size();
        ++operation_index) {
@@ -41,91 +43,46 @@ int main(int argc, char** argv) {
       continue;
     }
 
-    operations.emplace_back(
-        argument_list[operation_index].value(),
-        [&argument_list, &operation_index]() -> std::vector<std::string> {
-          const std::string& val = argument_list[operation_index].value();
+    const std::string& val = argument_list[operation_index].value();
 
-          if (val == "darken") {
-            if (operation_index + 1 >= argument_list.size()) {
-              throw std::runtime_error("Not enough arguments for darken");
-            }
-            const std::string& val1 =
-                argument_list[operation_index + 1].value();
-            ++operation_index;
-            return {val1};
-          } else if (val == "invert") {
-            return {};
-          } else if (val == "ref-hor") {
-            return {};
-          } else if (val == "ref-ver") {
-            return {};
-          } else if (val == "rotate") {
-            if (operation_index + 1 >= argument_list.size()) {
-              throw std::runtime_error("Not enough arguments for rotate");
-            }
-            const std::string& val1 =
-                argument_list[operation_index + 1].value();
-            ++operation_index;
-            return {val1};
-          } else if (val == "sobel") {
-            return {};
-          } else {
-            throw std::runtime_error("Unknown argument: " + val);
-          }
-        }());
+    if (val == "darken") {
+      if (operation_index + 1 >= argument_list.size()) {
+        throw std::runtime_error("Not enough arguments for darken");
+      }
+
+      if (!DarkenOperation::ValidateArguments({argument_list[operation_index + 1].value()})) {
+        throw std::runtime_error("Invalid argumet for darken: " + argument_list[operation_index + 1].value());
+      }
+
+      pipeline.AddOperation(std::move(std::make_unique<DarkenOperation>(
+              std::vector<std::string>{
+                argument_list[operation_index + 1].value()
+              }))
+          );
+
+      ++operation_index;
+     } else if (val == "invert") {
+      return {};
+    } else if (val == "ref-hor") {
+      return {};
+    } else if (val == "ref-ver") {
+      return {};
+    } else if (val == "rotate") {
+      if (operation_index + 1 >= argument_list.size()) {
+        throw std::runtime_error("Not enough arguments for rotate");
+      }
+      const std::string& val1 =
+        argument_list[operation_index + 1].value();
+      ++operation_index;
+      return {val1};
+    } else if (val == "sobel") {
+      return {};
+    } else {
+      throw std::runtime_error("Unknown argument: " + val);
+    }
   }
 
-  std::unordered_map<std::string,
-                     std::function<void(Image&, std::vector<std::string>)>>
-      call_table;
-
-  call_table["darken"] =
-      [](Image& local_image,
-         const std::vector<std::string>& operation_arguments) {
-        int percent = std::stoi(operation_arguments[0]);
-        
-        if (!(0 <= percent && percent <= 100)) {
-          throw std::runtime_error("Invalid darken argument: " + operation_arguments[0] + ". The argument must be an 0 <= integer <= 100.");
-        }
-
-        local_image.Darken(std::stoul(operation_arguments[0]));
-      };
-  call_table["invert"] =
-      [](Image& local_image,
-         const std::vector<std::string>& operation_arguments) {
-        local_image.Invert();
-      };
-  call_table["ref-hor"] =
-      [](Image& local_image,
-         const std::vector<std::string>& operation_arguments) {
-        local_image.ReflectHorizontally();
-      };
-  call_table["ref-ver"] =
-      [](Image& local_image,
-         const std::vector<std::string>& operation_arguments) {
-        local_image.ReflectVertically();
-      };
-  call_table["rotate"] =
-      [](Image& local_image,
-         const std::vector<std::string>& operation_arguments) {
-        int degree = std::stoi(operation_arguments[0]);
-        
-        if (!(std::abs(degree) % 90 == 0)) {
-          throw std::runtime_error("Invalid rotate argument: " + operation_arguments[0] + ". (Positive/Negative) Argument must be an integer that is multiple of 90.");
-        }
-
-        local_image.Rotate(std::stoi(operation_arguments[0]));
-      };
-  call_table["sobel"] =
-      [](Image& local_image,
-         const std::vector<std::string>& operation_arguments) {
-        local_image.SobelOperator();
-      };
-  
-  for (const auto& operation : operations) {
-    call_table[operation.first](image, operation.second);
-  }
+  pipeline.Run(image);
 
   image.CreateOutputImage(result["output"].as<std::string>());
 
