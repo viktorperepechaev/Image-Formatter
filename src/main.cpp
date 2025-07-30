@@ -9,11 +9,10 @@
 #include "../include/imageformatter/DarkenOperation.hpp"
 #include "../include/imageformatter/InvertOperation.hpp"
 #include "../include/imageformatter/ReflectHorizontallyOperation.hpp"
+#include "../include/imageformatter/ReflectVerticallyOperation.hpp"
 #include "../include/imageformatter/OperationPipeline.hpp"
 
 int main(int argc, char** argv) {
-  // TODO: Сделать проверку аргументов сразу
-
   cxxopts::Options options(
       "ImageFormatter",
       "This program formats the input picture based on cli arguments");
@@ -56,10 +55,10 @@ int main(int argc, char** argv) {
       }
 
       pipeline.AddOperation(std::move(std::make_unique<DarkenOperation>(
-              std::vector<std::string>{
+             std::vector<std::string>{
                 argument_list[operation_index + 1].value()
-              }))
-          );
+              }
+             )));
 
       ++operation_index;
      } else if (val == "invert") {
@@ -73,8 +72,11 @@ int main(int argc, char** argv) {
                )
              ));
      } else if (val == "ref-ver") {
-      return {};
-    } else if (val == "rotate") {
+       pipeline.AddOperation(std::move(std::make_unique<ReflectVerticallyOperation>(
+             std::vector<std::string>()
+               )
+             ));
+     } else if (val == "rotate") {
       if (operation_index + 1 >= argument_list.size()) {
         throw std::runtime_error("Not enough arguments for rotate");
       }

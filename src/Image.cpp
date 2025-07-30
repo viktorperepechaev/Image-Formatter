@@ -1,4 +1,6 @@
+#include <cstdint>
 #include <iostream>
+#include <sys/types.h>
 #include <vector>
 
 #include "../include/imageformatter/Image.hpp"
@@ -9,16 +11,24 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "../third_party/stb/stb_image_write.h"
 
-Image::Image(const std::string& filename) : data_(stbi_load(filename.c_str(), &width_, &height_, &number_of_channels_, 0), stbi_image_free) {
-  if (data_ == NULL) {
+Image::Image(const std::string& filename)  {
+  unsigned char* stbi_data = stbi_load(filename.c_str(), &width_, &height_, &number_of_channels_, 0); 
+
+  if (stbi_data == NULL) { 
     throw std::runtime_error("Can not open " + filename + "\nReason: " + stbi_failure_reason());
   }
+
+  data_.assign(reinterpret_cast<std::uint8_t*>(stbi_data), reinterpret_cast<std::uint8_t*>(stbi_data) + width_ * height_ * number_of_channels_);
+
+  stbi_image_free(stbi_data);
 
   std::cout << "Succesfully opened " + filename << std::endl;
 }
 
+Image::Image(const size_t height, const size_t width, const size_t number_of_channels) : height_(height), width_(width), number_of_channels_(number_of_channels), data_(width_ * height_ * number_of_channels_) {}
+
 std::vector<std::uint8_t> Image::GetNonAlphaPixelValues(const int line_index, const int column_index) const {
-  const unsigned char* const pixel = GetPixel(line_index, column_index);
+  auto pixel = GetPixelSpan(line_index, column_index);
 
   const int output_number_of_channels = [number_of_channels_ = number_of_channels_](){
     if (number_of_channels_ < 3) {
@@ -37,7 +47,7 @@ std::vector<std::uint8_t> Image::GetNonAlphaPixelValues(const int line_index, co
 }
 
 std::vector<std::uint8_t> Image::GetFullPixelValues(const int line_index, const int column_index) const {
-  const unsigned char* const pixel = GetPixel(line_index, column_index);
+  auto pixel = GetPixelSpan(line_index, column_index);
 
   std::vector<std::uint8_t> result(number_of_channels_);
 
@@ -49,7 +59,7 @@ std::vector<std::uint8_t> Image::GetFullPixelValues(const int line_index, const 
 }
 
 void Image::ApplyNewPixelValues(const int line_index, const int column_index, const std::vector<std::uint8_t>& new_pixel_values) {
-  unsigned char* const pixel = GetPixel(line_index, column_index);
+  auto pixel = GetPixelSpan(line_index, column_index);
 
   for (size_t current_channel = 0; current_channel < new_pixel_values.size(); ++current_channel) {
     pixel[current_channel] = new_pixel_values[current_channel];
@@ -68,25 +78,18 @@ size_t Image::GetNumberOfChannels() const noexcept {
   return static_cast<size_t>(number_of_channels_);
 }
 
-inline unsigned char* const Image::GetPixel(const int line_index, const int column_index) const {
-  return data_.get() + (line_index * width_ + column_index) * number_of_channels_;
+inline std::span<const std::uint8_t> Image::GetPixelSpan(const int line_index, const int column_index) const {
+  const int start_index = (line_index * width_ + column_index) * number_of_channels_;
+  return std::span<const std::uint8_t>(data_.begin() + start_index, number_of_channels_);
+}
+
+inline std::span<std::uint8_t> Image::GetPixelSpan(const int line_index, const int column_index) {
+  const int start_index = (line_index * width_ + column_index) * number_of_channels_;
+  return std::span<std::uint8_t>(data_.begin() + start_index, number_of_channels_);
 }
 
 bool Image::PixelIsInsideImage(const int line_index, const int column_index) const noexcept {
   return 0 <= line_index && line_index < height_ && 0 <= column_index && column_index < width_;
-}
-
-void Image::ReflectVertically() {
-  for (int current_line = 0; current_line < height_; ++current_line) {
-    for (int current_column = 0; current_column < width_ / 2; ++current_column) {
-      unsigned char* const current_pixel = data_.get() + (width_ * current_line + current_column) * number_of_channels_;
-      unsigned char* const horizontally_symmetrical_pixel = data_.get() + (width_ * current_line + (width_ - current_column - 1)) * number_of_channels_;
-
-      for (int current_channel = 0; current_channel < number_of_channels_; ++current_channel) {
-        std::swap(current_pixel[current_channel], horizontally_symmetrical_pixel[current_channel]);
-      }
-    }
-  }
 }
 
 void Image::Rotate90DegreesClockwise() {

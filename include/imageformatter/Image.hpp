@@ -2,18 +2,23 @@
 
 #include <vector>
 #include <string>
-#include <memory>
+#include <span>
 
 #include "../../third_party/stb/stb_image.h"
 #include "../../third_party/stb/stb_image_write.h"
 
 class Image {
  public:
+  static_assert(sizeof(unsigned char) == sizeof(std::uint8_t), "Platform incomplatibile: unsigned char != 8 bits!");
+
   Image() = delete;
-  Image(const std::string& filename); // TODO: Я тут заменил file_name на filename + image на Image
-  
+  Image(const std::string& filename);
+  Image(const size_t height, const size_t width, const size_t number_of_channels);
+
   ~Image() = default;
 
+  Image& operator=(Image&& image);
+  
   std::vector<std::uint8_t> GetNonAlphaPixelValues(const int line_index, const int column_index) const;
   std::vector<std::uint8_t> GetFullPixelValues(const int line_index, const int column_index) const;
 
@@ -30,14 +35,15 @@ class Image {
   };
 
  private:
-  unsigned char* const GetPixel(const int line_index, const int column_index) const;
+  std::span<const std::uint8_t> GetPixelSpan(const int line_index, const int column_index) const;
+  std::span<std::uint8_t> GetPixelSpan(const int line_index, const int column_index);
 
   bool PixelIsInsideImage(const int line_index, const int column_index) const noexcept;
 
   int width_;
   int height_;
   int number_of_channels_;
-  std::unique_ptr<unsigned char, void(*)(void*)> data_;
+  std::vector<std::uint8_t> data_;
 };
 
 //class image {
