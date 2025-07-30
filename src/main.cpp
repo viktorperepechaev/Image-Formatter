@@ -1,13 +1,14 @@
 #include <cstdlib>
-#include <functional>
 #include <initializer_list>
+#include <memory>
 #include <stdexcept>
 #include <string>
-#include <unordered_map>
 
 #include "../third_party/cxxopts/cxxopts.hpp"
 #include "../include/imageformatter/Image.hpp"
 #include "../include/imageformatter/DarkenOperation.hpp"
+#include "../include/imageformatter/InvertOperation.hpp"
+#include "../include/imageformatter/ReflectHorizontallyOperation.hpp"
 #include "../include/imageformatter/OperationPipeline.hpp"
 
 int main(int argc, char** argv) {
@@ -62,10 +63,16 @@ int main(int argc, char** argv) {
 
       ++operation_index;
      } else if (val == "invert") {
-      return {};
-    } else if (val == "ref-hor") {
-      return {};
-    } else if (val == "ref-ver") {
+       pipeline.AddOperation(std::make_unique<InvertOperation>(
+             std::vector<std::string>(
+               )
+             ));
+     } else if (val == "ref-hor") {
+       pipeline.AddOperation(std::move(std::make_unique<ReflectHorizontallyOperation>(
+             std::vector<std::string>()
+               )
+             ));
+     } else if (val == "ref-ver") {
       return {};
     } else if (val == "rotate") {
       if (operation_index + 1 >= argument_list.size()) {

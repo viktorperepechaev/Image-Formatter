@@ -76,32 +76,6 @@ bool Image::PixelIsInsideImage(const int line_index, const int column_index) con
   return 0 <= line_index && line_index < height_ && 0 <= column_index && column_index < width_;
 }
 
-void Image::Invert() {
-  for (int current_line = 0; current_line < height_; ++current_line) {
-    for (int current_column = 0; current_column < width_; ++current_column) {
-      unsigned char* const current_pixel = data_.get() + (width_ * current_line + current_column) * number_of_channels_;
-
-      for (int current_channel = 0; current_channel < number_of_channels_; ++current_channel) {
-        current_pixel[current_channel] = Constants::kMaxColorValue - current_pixel[current_channel];
-      }
-    }
-  }
-}
-
-void Image::ReflectHorizontally() {
-  for (int current_line = 0; current_line < height_ / 2; ++current_line) {
-    for (int current_column = 0; current_column < width_; ++current_column) {
-      unsigned char* const current_pixel = data_.get() + (width_ * current_line + current_column) * number_of_channels_;
-      unsigned char* const horizontally_symmetrical_pixel = data_.get() + (width_ * (height_ - current_line - 1) + current_column) * number_of_channels_;
-
-      for (int current_channel = 0; current_channel < number_of_channels_; ++current_channel) {
-        std::swap(current_pixel[current_channel], horizontally_symmetrical_pixel[current_channel]);
-      }
-    }
-  }
-}
-
-
 void Image::ReflectVertically() {
   for (int current_line = 0; current_line < height_; ++current_line) {
     for (int current_column = 0; current_column < width_ / 2; ++current_column) {

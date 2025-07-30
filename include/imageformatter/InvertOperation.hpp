@@ -5,6 +5,7 @@
 class InvertOperation : public OperationEnforceInterface<InvertOperation> {
  public:
   InvertOperation() = default;
+  InvertOperation(const std::vector<std::string>& arguments);
 
   void Apply(Image& image) const override;
  
