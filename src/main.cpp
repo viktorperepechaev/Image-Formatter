@@ -4,13 +4,15 @@
 #include <stdexcept>
 #include <string>
 
-#include "../third_party/cxxopts/cxxopts.hpp"
-#include "../include/imageformatter/Image.hpp"
 #include "../include/imageformatter/DarkenOperation.hpp"
+#include "../include/imageformatter/Image.hpp"
 #include "../include/imageformatter/InvertOperation.hpp"
+#include "../include/imageformatter/OperationPipeline.hpp"
 #include "../include/imageformatter/ReflectHorizontallyOperation.hpp"
 #include "../include/imageformatter/ReflectVerticallyOperation.hpp"
-#include "../include/imageformatter/OperationPipeline.hpp"
+#include "../include/imageformatter/RotateOperation.hpp"
+#include "../include/imageformatter/SobelOperatorOperation.hpp"
+#include "../third_party/cxxopts/cxxopts.hpp"
 
 int main(int argc, char** argv) {
   cxxopts::Options options(
@@ -50,42 +52,47 @@ int main(int argc, char** argv) {
         throw std::runtime_error("Not enough arguments for darken");
       }
 
-      if (!DarkenOperation::ValidateArguments({argument_list[operation_index + 1].value()})) {
-        throw std::runtime_error("Invalid argumet for darken: " + argument_list[operation_index + 1].value());
+      if (!DarkenOperation::ValidateArguments(
+              {argument_list[operation_index + 1].value()})) {
+        throw std::runtime_error("Invalid argumet for darken: " +
+                                 argument_list[operation_index + 1].value());
       }
 
-      pipeline.AddOperation(std::move(std::make_unique<DarkenOperation>(
-             std::vector<std::string>{
-                argument_list[operation_index + 1].value()
-              }
-             )));
+      pipeline.AddOperation(
+          std::move(std::make_unique<DarkenOperation>(std::vector<std::string>{
+              argument_list[operation_index + 1].value()})));
 
       ++operation_index;
-     } else if (val == "invert") {
-       pipeline.AddOperation(std::make_unique<InvertOperation>(
-             std::vector<std::string>(
-               )
-             ));
-     } else if (val == "ref-hor") {
-       pipeline.AddOperation(std::move(std::make_unique<ReflectHorizontallyOperation>(
-             std::vector<std::string>()
-               )
-             ));
-     } else if (val == "ref-ver") {
-       pipeline.AddOperation(std::move(std::make_unique<ReflectVerticallyOperation>(
-             std::vector<std::string>()
-               )
-             ));
-     } else if (val == "rotate") {
+    } else if (val == "invert") {
+      pipeline.AddOperation(
+          std::make_unique<InvertOperation>(std::vector<std::string>()));
+    } else if (val == "ref-hor") {
+      pipeline.AddOperation(
+          std::move(std::make_unique<ReflectHorizontallyOperation>(
+              std::vector<std::string>())));
+    } else if (val == "ref-ver") {
+      pipeline.AddOperation(
+          std::move(std::make_unique<ReflectVerticallyOperation>(
+              std::vector<std::string>())));
+    } else if (val == "rotate") {
       if (operation_index + 1 >= argument_list.size()) {
         throw std::runtime_error("Not enough arguments for rotate");
       }
-      const std::string& val1 =
-        argument_list[operation_index + 1].value();
+
+      if (!RotateOperation::ValidateArguments(
+              {argument_list[operation_index + 1].value()})) {
+        throw std::runtime_error("Invalid argument for rotate: " +
+                                 argument_list[operation_index + 1].value());
+      }
+
+      pipeline.AddOperation(
+          std::move(std::make_unique<RotateOperation>(std::vector<std::string>{
+              argument_list[operation_index + 1].value()})));
+
       ++operation_index;
-      return {val1};
     } else if (val == "sobel") {
-      return {};
+      pipeline.AddOperation(
+          std::make_unique<SobelOperatorOperation>(std::vector<std::string>()));
     } else {
       throw std::runtime_error("Unknown argument: " + val);
     }

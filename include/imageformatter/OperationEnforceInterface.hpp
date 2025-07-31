@@ -3,7 +3,7 @@
 #include "ImageOperation.hpp"
 
 template <typename SpecificOperation>
-class OperationEnforceInterface : public ImageOperation {
+class OperationEnforceInterface : public virtual ImageOperation {
  public:
    static bool ValidateArguments(const std::vector<std::string>& arguments) {
      SpecificOperation::ValidateArguments(arguments);
