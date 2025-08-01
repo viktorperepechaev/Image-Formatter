@@ -3,7 +3,7 @@
 #include "Image.hpp"
 
 class ImageOperation {
- public:
+public:
   virtual ~ImageOperation() = default;
-  virtual void Apply(Image& image) const = 0;
+  virtual void Apply(Image &image) const = 0;
 };

@@ -3,12 +3,13 @@
 #include "OperationEnforceInterface.hpp"
 
 class InvertOperation : public OperationEnforceInterface<InvertOperation> {
- public:
+public:
   InvertOperation() = default;
-  InvertOperation(const std::vector<std::string>& arguments);
+  InvertOperation(const std::vector<std::string> &arguments);
 
-  void Apply(Image& image) const override;
- 
-  static bool ValidateArguments(const std::vector<std::string>& arguments);
- private:
+  void Apply(Image &image) const override;
+
+  static bool ValidateArguments(const std::vector<std::string> &arguments);
+
+private:
 };

@@ -2,12 +2,13 @@
 
 #include "OperationEnforceInterface.hpp"
 
-class ReflectVerticallyOperation : public OperationEnforceInterface<ReflectVerticallyOperation> {
- public:
+class ReflectVerticallyOperation
+    : public OperationEnforceInterface<ReflectVerticallyOperation> {
+public:
   ReflectVerticallyOperation() = default;
-  ReflectVerticallyOperation(const std::vector<std::string>& arguments);
+  ReflectVerticallyOperation(const std::vector<std::string> &arguments);
 
-  void Apply(Image& image) const override;
+  void Apply(Image &image) const override;
 
-  static bool ValidateArguments(const std::vector<std::string>& arguments);
+  static bool ValidateArguments(const std::vector<std::string> &arguments);
 };

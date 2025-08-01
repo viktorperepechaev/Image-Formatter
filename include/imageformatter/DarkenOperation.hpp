@@ -3,13 +3,14 @@
 #include "OperationEnforceInterface.hpp"
 
 class DarkenOperation : public OperationEnforceInterface<DarkenOperation> {
- public:
+public:
   DarkenOperation(const std::uint8_t percent);
-  DarkenOperation(const std::vector<std::string>& arguments);
+  DarkenOperation(const std::vector<std::string> &arguments);
 
-  void Apply(Image& image) const override;
-  
-  static bool ValidateArguments(const std::vector<std::string>& arguments);
- private:
+  void Apply(Image &image) const override;
+
+  static bool ValidateArguments(const std::vector<std::string> &arguments);
+
+private:
   double needed_share_;
 };

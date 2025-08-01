@@ -14,7 +14,7 @@
 #include "../include/imageformatter/SobelOperatorOperation.hpp"
 #include "../third_party/cxxopts/cxxopts.hpp"
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   cxxopts::Options options(
       "ImageFormatter",
       "This program formats the input picture based on cli arguments");
@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
 
   Image image(result["input"].as<std::string>());
 
-  const auto& argument_list = result.arguments();
+  const auto &argument_list = result.arguments();
 
   OperationPipeline pipeline;
 
@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
       continue;
     }
 
-    const std::string& val = argument_list[operation_index].value();
+    const std::string &val = argument_list[operation_index].value();
 
     if (val == "darken") {
       if (operation_index + 1 >= argument_list.size()) {
@@ -59,21 +59,19 @@ int main(int argc, char** argv) {
       }
 
       pipeline.AddOperation(
-          std::move(std::make_unique<DarkenOperation>(std::vector<std::string>{
-              argument_list[operation_index + 1].value()})));
+          std::make_unique<DarkenOperation>(std::vector<std::string>{
+              argument_list[operation_index + 1].value()}));
 
       ++operation_index;
     } else if (val == "invert") {
       pipeline.AddOperation(
           std::make_unique<InvertOperation>(std::vector<std::string>()));
     } else if (val == "ref-hor") {
-      pipeline.AddOperation(
-          std::move(std::make_unique<ReflectHorizontallyOperation>(
-              std::vector<std::string>())));
+      pipeline.AddOperation(std::make_unique<ReflectHorizontallyOperation>(
+          std::vector<std::string>()));
     } else if (val == "ref-ver") {
-      pipeline.AddOperation(
-          std::move(std::make_unique<ReflectVerticallyOperation>(
-              std::vector<std::string>())));
+      pipeline.AddOperation(std::make_unique<ReflectVerticallyOperation>(
+          std::vector<std::string>()));
     } else if (val == "rotate") {
       if (operation_index + 1 >= argument_list.size()) {
         throw std::runtime_error("Not enough arguments for rotate");
@@ -86,8 +84,8 @@ int main(int argc, char** argv) {
       }
 
       pipeline.AddOperation(
-          std::move(std::make_unique<RotateOperation>(std::vector<std::string>{
-              argument_list[operation_index + 1].value()})));
+          std::make_unique<RotateOperation>(std::vector<std::string>{
+              argument_list[operation_index + 1].value()}));
 
       ++operation_index;
     } else if (val == "sobel") {
@@ -104,4 +102,3 @@ int main(int argc, char** argv) {
 
   return 0;
 }
-
