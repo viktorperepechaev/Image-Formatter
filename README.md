@@ -13,7 +13,7 @@ A simple command-line utility written in C++ for performing basic image manipula
     * Reflect horizontally (flip vertically)
     * Reflect vertically (flip horizontally)
     * Rotate by $n$ degrees, where $n = 90 \cdot k, k \in \mathbb{Z}$
-    * Sobel operator
+    * Sobel edge detection operator
 
 ## Dependencies
 
@@ -25,16 +25,15 @@ The project is self-contained and includes the necessary single-header libraries
 
 ## Building
 
-To build the project, you need a C++ compiler that supports at least C++11 (C++17 is recommended). Navigate to the project's root directory and run the following command. This command assumes you have placed `image.hpp` and `cxxopts.hpp` inside a `headers/` subdirectory.
+### Using CMake (Recommended)
+
+The project uses CMake for cross-platform building and requires C++20:
 
 ```bash
-g++ main.cpp image.cpp -o ImageFormatter -std=c++17 -I.
-```
-
-If your header files are in the same directory as the `.cpp` files, you will need to adjust the include paths in `main.cpp` and `image.cpp` from `headers/...` to `...` and then compile with:
-
-```bash
-g++ main.cpp image.cpp -o ImageFormatter -std=c++17
+mkdir build
+cd build
+cmake ..
+make
 ```
 
 ## Usage
@@ -66,7 +65,7 @@ The following operations can be applied in the order they are provided on the co
 - `rotate <degree>`
     - Rotates the image by `<degree>` degrees. If positive - clockwise, if negative - counterclockwise 
 - `sobel`
-    - Applies Sobel operator to the image
+    - Applies Sobel edge detection operator to the image for edge enhancement
 
 ## Examples
 1. Invert the colors of `input.jpg` and save it as inverted.png:
