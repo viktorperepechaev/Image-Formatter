@@ -14,6 +14,7 @@ A simple command-line utility written in C++ for performing basic image manipula
     * Reflect vertically (flip horizontally)
     * Rotate by $n$ degrees, where $n = 90 \cdot k, k \in \mathbb{Z}$
     * Sobel edge detection operator
+    * Steganography (hide/extract secret messages in images)
 
 ## Dependencies
 
@@ -66,11 +67,27 @@ The following operations can be applied in the order they are provided on the co
     - Rotates the image by `<degree>` degrees. If positive - clockwise, if negative - counterclockwise 
 - `sobel`
     - Applies Sobel edge detection operator to the image for edge enhancement
+- `encode <message>`
+    - Hides a secret message in the image using steganography (LSB method)
+    - **Important**: Message must be a single word (no spaces). Use underscores '_' instead of spaces
+    - **Important**: Message cannot contain the '$' symbol (used as terminator)
+- `decode`
+    - Extracts hidden message from image and saves it to `log.txt`
+    - Use this on images that were processed with `encode` operation
 
 ## Examples
 1. Invert the colors of `input.jpg` and save it as inverted.png:
-    `./ImageFormatter -i input.jpg -o inverted.png -- invert`
+    `./imageformatter -i input.jpg -o inverted.png -- invert`
 2. Darken `photo.png` to 70% brightness and then reflect it vertically:
-    `./ImageFormatter -i photo.png -o processed.png -- darken 70 ref-ver`
+    `./imageformatter -i photo.png -o processed.png -- darken 70 ref-ver`
 3. Apply multiple reflections to original.bmp:
-    `./ImageFormatter -i original.bmp -o reflected.png -- ref-hor ref-ver`
+    `./imageformatter -i original.bmp -o reflected.png -- ref-hor ref-ver`
+4. Hide a secret message in an image:
+    `./imageformatter -i secret.jpg -o hidden.png -- encode "top_secret_mission"`
+5. Extract hidden message from an image:
+    `./imageformatter -i hidden.png -o temp.png -- decode`
+    (Check `log.txt` for the extracted message)
+6. Apply effects BEFORE encoding (encode must be LAST):
+    `./imageformatter -i photo.jpg -o final.png -- darken 90 ref-hor encode meet_at_midnight_sweety_:)`
+    
+**Note**: The `encode` operation must always be the last operation in any chain, as all other operations modify pixel values and will destroy hidden messages.
