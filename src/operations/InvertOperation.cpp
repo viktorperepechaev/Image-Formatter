@@ -25,3 +25,5 @@ bool InvertOperation::ValidateArguments(
     const std::vector<std::string> &arguments) {
   return arguments.empty();
 }
+
+std::string InvertOperation::GetName() const { return "invert"; }

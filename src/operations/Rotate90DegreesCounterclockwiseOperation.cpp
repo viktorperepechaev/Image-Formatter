@@ -30,6 +30,10 @@ void Rotate90DegreesCounterclockwiseOperation::Apply(Image &image) const {
   image = std::move(buffer_image);
 }
 
+std::string Rotate90DegreesCounterclockwiseOperation::GetName() const {
+  return "rot-ccw";
+}
+
 bool Rotate90DegreesCounterclockwiseOperation::ValidateArguments(
     const std::vector<std::string> &arguments) {
   return arguments.empty();

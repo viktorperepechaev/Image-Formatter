@@ -28,9 +28,11 @@ void RotateOperation::Apply(Image &image) const {
   }
 }
 
+std::string RotateOperation::GetName() const { return "rotate"; }
+
 bool RotateOperation::ValidateArguments(
     const std::vector<std::string> &arguments) {
   return arguments.size() == 1 &&
-         arguments[0].find_first_not_of("0123456789") == std::string::npos &&
+         arguments[0].find_first_not_of("-0123456789") == std::string::npos &&
          std::stoi(arguments[0]) % 90 == 0;
 }

@@ -27,6 +27,8 @@ void ReflectVerticallyOperation::Apply(Image &image) const {
   }
 }
 
+std::string ReflectVerticallyOperation::GetName() const { return "ref-ver"; }
+
 bool ReflectVerticallyOperation::ValidateArguments(
     const std::vector<std::string> &arguments) {
   return arguments.empty();

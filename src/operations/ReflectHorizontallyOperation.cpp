@@ -27,6 +27,8 @@ void ReflectHorizontallyOperation::Apply(Image &image) const {
   }
 };
 
+std::string ReflectHorizontallyOperation::GetName() const { return "ref-hor"; }
+
 bool ReflectHorizontallyOperation::ValidateArguments(
     const std::vector<std::string> &arguments) {
   return arguments.empty();

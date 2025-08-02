@@ -29,6 +29,10 @@ void Rotate90DegreesClockwiseOperation::Apply(Image &image) const {
   image = std::move(buffer_image);
 }
 
+std::string Rotate90DegreesClockwiseOperation::GetName() const {
+  return "rot-cw";
+}
+
 bool Rotate90DegreesClockwiseOperation::ValidateArguments(
     const std::vector<std::string> &arguments) {
   return arguments.empty();

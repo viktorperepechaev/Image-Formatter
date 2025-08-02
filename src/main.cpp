@@ -12,6 +12,8 @@
 #include "../include/imageformatter/ReflectVerticallyOperation.hpp"
 #include "../include/imageformatter/RotateOperation.hpp"
 #include "../include/imageformatter/SobelOperatorOperation.hpp"
+#include "../include/imageformatter/SteganographyDecodeOperation.hpp"
+#include "../include/imageformatter/SteganographyEncodeOperation.hpp"
 #include "../third_party/cxxopts/cxxopts.hpp"
 
 int main(int argc, char **argv) {
@@ -91,6 +93,18 @@ int main(int argc, char **argv) {
     } else if (val == "sobel") {
       pipeline.AddOperation(
           std::make_unique<SobelOperatorOperation>(std::vector<std::string>()));
+    } else if (val == "encode") {
+      if (operation_index + 1 >= argument_list.size()) {
+        throw std::runtime_error("Not enough arguments for darken");
+      }
+
+      pipeline.AddOperation(std::make_unique<SteganographyEncodeOperation>(
+          std::vector<std::string>{
+              argument_list[operation_index + 1].value()}));
+
+      ++operation_index;
+    } else if (val == "decode") {
+      pipeline.AddOperation(std::make_unique<SteganographyDecodeOperation>());
     } else {
       throw std::runtime_error("Unknown argument: " + val);
     }

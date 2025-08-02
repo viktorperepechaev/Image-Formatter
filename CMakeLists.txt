@@ -74,6 +74,8 @@ add_library(ImageOperations STATIC
     src/operations/Rotate90DegreesCounterclockwiseOperation.cpp
     src/operations/RotateOperation.cpp
     src/operations/SobelOperatorOperation.cpp
+    src/operations/SteganographyEncodeOperation.cpp
+    src/operations/SteganographyDecodeOperation.cpp
     src/operations/OperationPipeline.cpp
 )
 

@@ -65,6 +65,8 @@ void SobelOperatorOperation::Apply(Image &image) const {
   image = std::move(buffer_image);
 }
 
+std::string SobelOperatorOperation::GetName() const { return "sobel"; }
+
 bool SobelOperatorOperation::ValidateArguments(
     const std::vector<std::string> &arguments) {
   return arguments.empty();

@@ -30,3 +30,5 @@ bool DarkenOperation::ValidateArguments(
          arguments[0].find_first_not_of("0123456789") == std::string::npos &&
          0 <= std::stoi(arguments[0]) && std::stoi(arguments[0]) <= 100;
 }
+
+std::string DarkenOperation::GetName() const { return "darken"; }

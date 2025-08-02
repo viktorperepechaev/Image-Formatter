@@ -9,6 +9,7 @@ public:
   ReflectVerticallyOperation(const std::vector<std::string> &arguments);
 
   void Apply(Image &image) const override;
+  std::string GetName() const override;
 
   static bool ValidateArguments(const std::vector<std::string> &arguments);
 };
