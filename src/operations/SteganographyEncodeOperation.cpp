@@ -1,13 +1,10 @@
 #include "../../include/helper/StringToBinary.hpp"
+#include "../../include/helper/GetRandomValue.hpp"
 #include "../../include/imageformatter/SteganographyEncodeOperation.hpp"
 
 SteganographyEncodeOperation::SteganographyEncodeOperation(const std::string& secret_message) : rnd(228), secret_message_(secret_message) {}
 
 SteganographyEncodeOperation::SteganographyEncodeOperation(const std::vector<std::string>& arguments) : SteganographyEncodeOperation(arguments[0]) {}
-
-int SteganographyEncodeOperation::GetRandomValue(int min, int max) const {
-  return rnd() % (max - min + 1) + min;
-}
 
 void SteganographyEncodeOperation::Apply(Image& image) const {
   std::string binary_message = StringToBinary(secret_message_ + "$");
@@ -16,8 +13,8 @@ void SteganographyEncodeOperation::Apply(Image& image) const {
   std::vector<std::uint8_t> channel_indexes;
 
   for (const auto& el : binary_message) {
-    pixel_coordinates.emplace_back(GetRandomValue(0, image.GetHeight() - 1), GetRandomValue(0, image.GetWidth() - 1));
-    channel_indexes.emplace_back(GetRandomValue(0, image.GetNumberOfChannels() - 1));
+    pixel_coordinates.emplace_back(GetRandomValue(rnd, 0, image.GetHeight() - 1), GetRandomValue(rnd, 0, image.GetWidth() - 1));
+    channel_indexes.emplace_back(GetRandomValue(rnd, 0, image.GetNumberOfChannels() - 1));
     
     std::vector<std::uint8_t> nonalpha_pixel_values = image.GetNonAlphaPixelValues(pixel_coordinates.back().first, pixel_coordinates.back().second);
 

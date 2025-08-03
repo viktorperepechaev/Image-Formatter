@@ -16,8 +16,6 @@ public:
   static bool ValidateArguments(const std::vector<std::string> &arguments);
 
 private:
-  int GetRandomValue(int min, int max) const;
-
   mutable std::mt19937 rnd;
   std::string secret_message_;
 };
