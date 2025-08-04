@@ -1,15 +1,35 @@
+build/
+**/CMakeFiles/
+**/cmake_install.cmake
+**/Makefile
+**/CTestTestfile.cmake
+**/*.cmake
+!CMakeLists.txt
+
+.cache/
+.vscode/
+.clangd/
+**/*.idx
+
+tests/ImageFormatter_Tests
+tests/Makefile
+tests/**/*.cmake
+!tests/CMakeLists.txt
+
+imageformatter
+*.exe
+*.out
+
+*.tmp
+*.log
+output.txt
+log.txt
+result.png
 *.swp
 
 *.DS_Store
 
-*.jpg
-*.png
-
-src/main
-
 tmp/*
-
-build/*
 
 _deps/*
 
