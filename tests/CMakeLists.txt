@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 include(FetchContent)
+include(CTest)
 
 FetchContent_Declare(
   googletest
@@ -13,6 +14,11 @@ FetchContent_MakeAvailable(googletest)
 
 add_executable(ImageFormatter_Tests
     full_scenario_test.cpp
+)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Cute.jpg
+               ${CMAKE_CURRENT_BINARY_DIR}/Cute.jpg
+               COPYONLY
 )
 
 target_include_directories(ImageFormatter_Tests PRIVATE

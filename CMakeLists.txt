@@ -71,7 +71,11 @@ install(TARGETS imageformatter
     RUNTIME DESTINATION bin
 )
 
+# Testing:
+
 add_subdirectory(tests)
+
+# Status
 
 message(STATUS "ImageFormatter Configuration:")
 message(STATUS "  C++ Standard: ${CMAKE_CXX_STANDARD}")
