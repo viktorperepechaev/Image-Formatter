@@ -1,5 +1,0 @@
-if(EXISTS "/Users/viktor/MIPT/CPP/Playground/Image-To-Ascii-Converter/tests/ImageFormatter_Tests[1]_tests.cmake")
-  include("/Users/viktor/MIPT/CPP/Playground/Image-To-Ascii-Converter/tests/ImageFormatter_Tests[1]_tests.cmake")
-else()
-  add_test(ImageFormatter_Tests_NOT_BUILT ImageFormatter_Tests_NOT_BUILT)
-endif()
