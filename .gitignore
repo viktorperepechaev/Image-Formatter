@@ -10,3 +10,7 @@ src/main
 tmp/*
 
 build/*
+
+_deps/*
+
+compile_commands.json
