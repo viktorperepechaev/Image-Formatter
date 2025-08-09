@@ -72,7 +72,7 @@ The following operations can be applied in the order they are provided on the co
     - **Important**: Message must be a single word (no spaces). Use underscores '_' instead of spaces
     - **Important**: Message cannot contain the '$' symbol (used as terminator)
 - `decode`
-    - Extracts hidden message from image and saves it to `log.txt`
+    - Extracts hidden message from image and saves it to `decode.txt`
     - Use this on images that were processed with `encode` operation
 
 ## Examples

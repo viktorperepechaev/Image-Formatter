@@ -29,11 +29,11 @@ void SteganographyDecodeOperation::Apply(Image& image) const {
 
   result.pop_back();
 
-  std::ofstream out_file("output.txt", std::ios::app);
+  std::ofstream out_file("decode.txt", std::ios::app);
   out_file << "Decoded message: " << result << '\n';
   out_file.close();
   
-  std::cout << "Saved decoded message into output.txt\n";
+  std::cout << "Saved decoded message into decode.txt\n";
 }
 
 std::string SteganographyDecodeOperation::GetName() const {
