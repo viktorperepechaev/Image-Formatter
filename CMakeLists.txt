@@ -38,6 +38,7 @@ add_library(ImageOperations STATIC
     src/operations/SobelOperatorOperation.cpp
     src/operations/SteganographyEncodeOperation.cpp
     src/operations/SteganographyDecodeOperation.cpp
+    src/operations/GrayscaleOperation.cpp
     src/operations/OperationPipeline.cpp
 )
 

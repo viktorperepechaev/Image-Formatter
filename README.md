@@ -10,6 +10,7 @@ A simple command-line utility written in C++ for performing basic image manipula
 * Supported operations:
     * Darken
     * Invert colors
+    * Grayscale
     * Reflect horizontally (flip vertically)
     * Reflect vertically (flip horizontally)
     * Rotate by $n$ degrees, where $n = 90 \cdot k, k \in \mathbb{Z}$
@@ -59,6 +60,8 @@ The following operations can be applied in the order they are provided on the co
     - Reduces the brightness of the image. `<percentage>` is an integer from 0 to 100 representing the desired final brightness level. For example, `darken 50` makes the image half as bright.
 - `invert`
     - Inverts the colors of the image (creates a photo negative effect).
+- `grayscale`
+    - Turns colors of the picture into shades of gray.
 - `ref-hor`
     - Reflects the image across the horizontal axis (flips it vertically).
 - `ref-ver`

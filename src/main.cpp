@@ -14,6 +14,7 @@
 #include "../include/imageformatter/SobelOperatorOperation.hpp"
 #include "../include/imageformatter/SteganographyDecodeOperation.hpp"
 #include "../include/imageformatter/SteganographyEncodeOperation.hpp"
+#include "../include/imageformatter/GrayscaleOperation.hpp"
 #include "../third_party/cxxopts/cxxopts.hpp"
 
 int main(int argc, char **argv) {
@@ -105,6 +106,8 @@ int main(int argc, char **argv) {
       ++operation_index;
     } else if (val == "decode") {
       pipeline.AddOperation(std::make_unique<SteganographyDecodeOperation>());
+    } else if (val == "grayscale") {
+      pipeline.AddOperation(std::make_unique<GrayscaleOperation>());
     } else {
       throw std::runtime_error("Unknown argument: " + val);
     }
