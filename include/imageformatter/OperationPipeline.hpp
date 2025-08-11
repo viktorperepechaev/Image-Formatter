@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ImageOperation.hpp"
+#include <unordered_map>
 
 class OperationPipeline {
 public:
@@ -8,8 +9,9 @@ public:
 
   void AddOperation(std::unique_ptr<ImageOperation> &&operation);
 
-  void Run(Image &image) const;
+  void Run(Image &image);
 
 private:
   std::vector<std::unique_ptr<ImageOperation>> operations;
+  std::unordered_map<std::string, bool> had_operation_;
 };

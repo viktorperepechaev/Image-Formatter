@@ -1,5 +1,4 @@
 #include "../../include/imageformatter/DownscaleOperation.hpp"
-#include <iostream>
 
 DownscaleOperation::DownscaleOperation(const size_t height_scale_factor,
                                        const size_t width_scale_factor)
@@ -64,8 +63,6 @@ void DownscaleOperation::Apply(Image& image) const {
                                     new_pixel);
     }
   }
-  std::cout << "new_image height = " + std::to_string(new_image.GetHeight()) << '\n';
-  std::cout << "new_image width = " + std::to_string(new_image.GetWidth()) << '\n';
   image = std::move(new_image);
 }
 

@@ -16,6 +16,7 @@
 #include "../include/imageformatter/SobelOperatorOperation.hpp"
 #include "../include/imageformatter/SteganographyDecodeOperation.hpp"
 #include "../include/imageformatter/SteganographyEncodeOperation.hpp"
+#include "../include/imageformatter/ImageToASCIIOperation.hpp"
 #include "../third_party/cxxopts/cxxopts.hpp"
 
 int main(int argc, char **argv) {
@@ -128,6 +129,8 @@ int main(int argc, char **argv) {
               argument_list[operation_index + 2].value()}));
 
       operation_index += 2;
+    } else if (val == "ascii") {
+      pipeline.AddOperation(std::make_unique<ImageToASCIIOperation>());
     } else {
       throw std::runtime_error("Unknown argument: " + val);
     }

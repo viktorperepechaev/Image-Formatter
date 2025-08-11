@@ -17,6 +17,7 @@ A simple command-line utility written in C++ for performing basic image manipula
     * Rotate by $n$ degrees, where $n = 90 \cdot k, k \in \mathbb{Z}$
     * Sobel edge detection operator
     * Steganography (hide/extract secret messages in images)
+    * Turn image into ASCII characters
 
 ## Dependencies
 
@@ -80,6 +81,8 @@ The following operations can be applied in the order they are provided on the co
 - `decode`
     - Extracts hidden message from image and saves it to `decode.txt`
     - Use this on images that were processed with `encode` operation
+- `ascii`
+    - **Each pixel** turns into a character so you would probably want to downscale (shrinking height twice as much as width looks best) your image first.
 
 ## Examples
 1. Invert the colors of `input.jpg` and save it as inverted.png:
