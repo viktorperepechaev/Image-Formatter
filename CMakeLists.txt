@@ -39,6 +39,7 @@ add_library(ImageOperations STATIC
     src/operations/SteganographyEncodeOperation.cpp
     src/operations/SteganographyDecodeOperation.cpp
     src/operations/GrayscaleOperation.cpp
+    src/operations/DownscaleOperation.cpp
     src/operations/OperationPipeline.cpp
 )
 

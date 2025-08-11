@@ -11,6 +11,7 @@ A simple command-line utility written in C++ for performing basic image manipula
     * Darken
     * Invert colors
     * Grayscale
+    * Downscale
     * Reflect horizontally (flip vertically)
     * Reflect vertically (flip horizontally)
     * Rotate by $n$ degrees, where $n = 90 \cdot k, k \in \mathbb{Z}$
@@ -62,6 +63,8 @@ The following operations can be applied in the order they are provided on the co
     - Inverts the colors of the image (creates a photo negative effect).
 - `grayscale`
     - Turns colors of the picture into shades of gray.
+- `downscale <height factor> <width factor>`
+    - Shrinks image vertically `<height factor>` times + Srinks image horizontally `width factor` times. `<height factor>` and `<width factor>` must be natural numbers.
 - `ref-hor`
     - Reflects the image across the horizontal axis (flips it vertically).
 - `ref-ver`

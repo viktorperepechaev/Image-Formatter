@@ -5,6 +5,8 @@
 #include <string>
 
 #include "../include/imageformatter/DarkenOperation.hpp"
+#include "../include/imageformatter/DownscaleOperation.hpp"
+#include "../include/imageformatter/GrayscaleOperation.hpp"
 #include "../include/imageformatter/Image.hpp"
 #include "../include/imageformatter/InvertOperation.hpp"
 #include "../include/imageformatter/OperationPipeline.hpp"
@@ -14,7 +16,6 @@
 #include "../include/imageformatter/SobelOperatorOperation.hpp"
 #include "../include/imageformatter/SteganographyDecodeOperation.hpp"
 #include "../include/imageformatter/SteganographyEncodeOperation.hpp"
-#include "../include/imageformatter/GrayscaleOperation.hpp"
 #include "../third_party/cxxopts/cxxopts.hpp"
 
 int main(int argc, char **argv) {
@@ -108,6 +109,25 @@ int main(int argc, char **argv) {
       pipeline.AddOperation(std::make_unique<SteganographyDecodeOperation>());
     } else if (val == "grayscale") {
       pipeline.AddOperation(std::make_unique<GrayscaleOperation>());
+    } else if (val == "downscale") {
+      if (operation_index + 2 >= argument_list.size()) {
+        throw std::runtime_error("not enough arguments for downscale");
+      }
+
+      if (!DownscaleOperation::ValidateArguments(
+              {argument_list[operation_index + 1].value(),
+               argument_list[operation_index + 2].value()})) {
+        throw std::runtime_error("Invalid arguments for downscale: " +
+                                 argument_list[operation_index + 1].value() +
+                                 argument_list[operation_index + 2].value());
+      }
+
+      pipeline.AddOperation(std::make_unique<DownscaleOperation>(
+          std::vector<std::string>{
+              argument_list[operation_index + 1].value(),
+              argument_list[operation_index + 2].value()}));
+
+      operation_index += 2;
     } else {
       throw std::runtime_error("Unknown argument: " + val);
     }
